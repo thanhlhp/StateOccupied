@@ -21,11 +21,12 @@ public class TouchPosition : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-       if(collision.transform.name != "unit" && collision.transform.name != myAreaname)
+       if(collision.transform.name != "unit" && collision.transform.name != myAreaname )
         {
             myArea.GetComponent<AreaScript>().target = collision.gameObject;
+       
             myArea.GetComponent<AreaScript>().Atk = 1;
-            Debug.Log("cham vao dich");
+            Debug.Log("cham vao dich"+collision.gameObject.name);
         }   
     }
 

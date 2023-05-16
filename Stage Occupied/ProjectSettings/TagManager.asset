@@ -8,6 +8,7 @@ TagManager:
   - EnemyStage
   - Unit
   - Touch
+  - EmptyStage
   layers:
   - Default
   - TransparentFX

@@ -115,3 +115,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
+  sender: 
+  cl: {r: 0, g: 0, b: 0, a: 0}
+  speed: 5
+  posBegin: {x: 0, y: 0, z: 0}

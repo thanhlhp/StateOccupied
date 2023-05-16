@@ -7,12 +7,12 @@ public class UnitScript : MonoBehaviour
     public GameObject target;
     public string sender;
     public Color cl;
-    public float speed;
+    public float speed ;
     public Vector3 posBegin;
     // Start is called before the first frame update
     void Start()
     {
-        speed = 3f;
+        
     }
 
     // Update is called once per frame

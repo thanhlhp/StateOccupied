@@ -18,6 +18,7 @@ public class TouchScript : MonoBehaviour
     {
       if(Input.GetMouseButtonUp(0))
         {
+          
             canRenline = 2;
         }
     }
@@ -27,6 +28,7 @@ public class TouchScript : MonoBehaviour
     }
     public void Destroy()
     {
+        
         Destroy(this.touchPosition.gameObject);
     }
 }

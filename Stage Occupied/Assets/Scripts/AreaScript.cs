@@ -19,8 +19,9 @@ public class AreaScript : MonoBehaviour
     public GameObject unitPb;
     private bool canMake;
     private float secondTimer;
+    public float botTimer;
     private int canRenLine = 0;
-
+    private string targetName;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,15 +31,18 @@ public class AreaScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(secondTimer);
+        
         if (canMake == false)
         {
+            
             timer += 2 * Time.deltaTime;
+            if(this.gameObject.tag =="EnemyStage")
+            botTimer += 1 * Time.deltaTime;
         }
         if(canMake == true)
         {
             secondTimer += 1 * Time.deltaTime;
-            if (secondTimer > 3)
+            if (secondTimer > 2)
             {
                 canMake = false;
                 secondTimer = 0;
@@ -46,9 +50,13 @@ public class AreaScript : MonoBehaviour
         }
         if (timer >= 1)
         {
-            unit += 1;
-            myNumber.text = unit.ToString();
-            timer = 0;
+            if ((this.gameObject.tag == "EmptyStage" && this.unit < LevelScript.instance.maxUnitEmpty)||(this.unit< LevelScript.instance.maxUnitState && this.gameObject.tag !="EmptyStage"))
+            {
+                unit += 1;
+                myNumber.text = unit.ToString();
+                timer = 0;
+                
+            }
         }
         if (manager == 1)
         {
@@ -62,7 +70,27 @@ public class AreaScript : MonoBehaviour
             canMake = true;
             StartCoroutine(MakeUnit());
             Atk = 3;
-        }    
+        }
+        if (this.gameObject.tag == "EnemyStage"  && botTimer >3 )
+        {
+            botTimer = 0;
+            foreach (GameObject state in LevelScript.instance.State)
+            {
+                if (state.GetComponent<AreaScript>().unit <= this.unit && state.transform.tag != this.transform.tag)
+                {
+                    Debug.Log(state.transform.name);
+                    StartCoroutine(MakeUnit());
+                    target = state;
+                    break;
+                }
+               
+            }
+           
+            
+           
+            
+        }
+       
     }
     IEnumerator MakeUnit()
     {
@@ -71,14 +99,17 @@ public class AreaScript : MonoBehaviour
             yield return new WaitForSeconds(0.3f);
             GameObject u = Instantiate(unitPb, this.transform.position, Quaternion.identity);
             u.GetComponent<UnitScript>().target = target;
+            //u.GetComponent<SpriteRenderer>().color = this.GetComponent<SpriteRenderer>().color;
             u.gameObject.tag = this.gameObject.tag;
             u.GetComponent<UnitScript>().sender = this.transform.name;
             u.GetComponent<UnitScript>().cl = this.GetComponent<SpriteRenderer>().color;
             u.gameObject.name = "unit";
             unit--;
+            if(unit>=0)
             myNumber.text = unit.ToString();
             secondTimer = 0;
-            if( unit == 0)
+           
+            if ( unit == 0)
             {
                 Atk = 0;
                 //canMake = false;
@@ -91,24 +122,23 @@ public class AreaScript : MonoBehaviour
     }    
     private void OnMouseDown()
     {
-
-        //touchPosition = Instantiate(obg, Vector3.zero, Quaternion.identity);
-      
-        TouchScript.instance.Spawn();
-        manager = 1;
-        Instantiate(line, this.transform.position, Quaternion.identity);
-        TouchScript.instance.touchPosition.GetComponent<TouchPosition>().myArea = this.gameObject;
-        TouchScript.instance.touchPosition.GetComponent<TouchPosition>().myTag = this.gameObject.tag;
-        TouchScript.instance.touchPosition.GetComponent<TouchPosition>().myAreaname = this.transform.name;
-
+      if(this.gameObject.tag =="MyStage")
+        {
+            TouchScript.instance.Spawn();
+            manager = 1;
+            Instantiate(line, this.transform.position, Quaternion.identity);
+            TouchScript.instance.touchPosition.GetComponent<TouchPosition>().myArea = this.gameObject;
+            TouchScript.instance.touchPosition.GetComponent<TouchPosition>().myTag = this.gameObject.tag;
+            TouchScript.instance.touchPosition.GetComponent<TouchPosition>().myAreaname = this.transform.name;
+        }    
     }
     private void OnMouseUp()
     {
         manager = 0;
-        //Destroy(touchPosition);
         TouchScript.instance.Destroy();
         line.SetPosition(0, Vector3.zero);
         line.SetPosition(1, Vector3.zero);
+        //Destroy(line.gameObject);
         if (Atk == 1)
         {
             Atk = 2;
@@ -117,9 +147,10 @@ public class AreaScript : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.transform.tag != this.gameObject.transform.tag && collision.transform.tag != "Touch")
+
+        if (collision.transform.tag != this.gameObject.transform.tag && collision.transform.tag != "Touch" && this.gameObject.name == collision.GetComponent<UnitScript>().target.transform.name) 
         {
-            
+           
             Destroy(collision.gameObject);
             if (unit > 0)
             {
@@ -137,8 +168,9 @@ public class AreaScript : MonoBehaviour
             }
 
         }
-        if (collision.transform.tag == this.gameObject.transform.tag && collision.transform.tag != "Touch")
+        if (collision.transform.tag == this.gameObject.transform.tag && collision.transform.tag != "Touch" && this.gameObject.name == collision.GetComponent<UnitScript>().target.transform.name)
         {
+            
             if (collision.GetComponent<UnitScript>().sender != this.transform.name)
             {
                 canMake = true;
