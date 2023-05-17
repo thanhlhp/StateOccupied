@@ -22,6 +22,7 @@ public class AreaScript : MonoBehaviour
     public float botTimer;
     private int canRenLine = 0;
     private string targetName;
+    public bool lineOn = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -58,7 +59,7 @@ public class AreaScript : MonoBehaviour
                 
             }
         }
-        if (manager == 1)
+        if (manager == 1 )
         {
             TouchScript.instance.touchPosition.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, +10));
             line.SetPosition(0, this.transform.position);
@@ -67,9 +68,14 @@ public class AreaScript : MonoBehaviour
         }
         if (Atk == 2)
         {
-            canMake = true;
-            StartCoroutine(MakeUnit());
-            Atk = 3;
+            if(target.transform.name != this.transform.name)
+            {
+                canMake = true;
+                StartCoroutine(MakeUnit());
+                Atk = 3;
+            }
+           
+          
         }
         if (this.gameObject.tag == "EnemyStage"  && botTimer >3 )
         {
@@ -84,13 +90,24 @@ public class AreaScript : MonoBehaviour
                     break;
                 }
                
-            }
-           
-            
-           
-            
+            }      
         }
-       
+  
+        if(TouchScript.instance.manager == 1 && this.manager == 1)
+        {
+            manager = 0;
+            TouchScript.instance.Destroy();
+            line.SetPosition(0, Vector3.zero);
+            line.SetPosition(1, Vector3.zero);
+            target = TouchScript.instance.target;
+            //Destroy(line.gameObject);
+            //if (Atk == 1)
+            //{
+                Atk = 2;
+            //}
+        }
+
+
     }
     IEnumerator MakeUnit()
     {
@@ -119,10 +136,11 @@ public class AreaScript : MonoBehaviour
                 canMake = true;
             }
         }
-    }    
+    }
     private void OnMouseDown()
     {
-      if(this.gameObject.tag =="MyStage")
+        TouchScript.instance.manager = 0;
+        if (this.gameObject.tag == "MyStage")
         {
             TouchScript.instance.Spawn();
             manager = 1;
@@ -130,21 +148,13 @@ public class AreaScript : MonoBehaviour
             TouchScript.instance.touchPosition.GetComponent<TouchPosition>().myArea = this.gameObject;
             TouchScript.instance.touchPosition.GetComponent<TouchPosition>().myTag = this.gameObject.tag;
             TouchScript.instance.touchPosition.GetComponent<TouchPosition>().myAreaname = this.transform.name;
-        }    
+        }
     }
     private void OnMouseUp()
     {
-        manager = 0;
-        TouchScript.instance.Destroy();
-        line.SetPosition(0, Vector3.zero);
-        line.SetPosition(1, Vector3.zero);
-        //Destroy(line.gameObject);
-        if (Atk == 1)
-        {
-            Atk = 2;
-        }
-       
+        TouchScript.instance.manager = 1;
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
 

@@ -8,7 +8,8 @@ public class TouchScript : MonoBehaviour
     public GameObject obg;
     public GameObject touchPosition;
     public static TouchScript instance;
-    public int canRenline;
+    public int manager;
+    public GameObject target;
     // Update is called once per frame
     private void Start()
     {
@@ -18,8 +19,8 @@ public class TouchScript : MonoBehaviour
     {
       if(Input.GetMouseButtonUp(0))
         {
-          
-            canRenline = 2;
+            manager = 1;
+            
         }
     }
     public void Spawn()
