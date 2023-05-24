@@ -17,10 +17,13 @@ public class TouchScript : MonoBehaviour
     }
     void Update()
     {
-      if(Input.GetMouseButtonUp(0))
+        if (GamePlayManager.g.isPlaying)
         {
-            manager = 1;
-            
+            if (Input.GetMouseButtonUp(0))
+            {
+                manager = 1;
+
+            }
         }
     }
     public void Spawn()

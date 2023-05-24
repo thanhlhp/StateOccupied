@@ -21,7 +21,7 @@ public class TouchPosition : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-       if(collision.transform.name != "unit" && collision.transform.name != myAreaname )
+       if(collision.transform.name != "unit"  )
         {
             //myArea.GetComponent<AreaScript>().target = collision.gameObject;
 
@@ -30,14 +30,18 @@ public class TouchPosition : MonoBehaviour
             TouchScript.instance.target = collision.gameObject;
 
         }
-       if(collision.transform.tag == "MyStage")
+       if(collision.transform.tag == "MyStage" && collision.transform.name != "unit")
         {
             if (collision.GetComponent<AreaScript>().manager == 0)
             {
                 AreaScript myState = collision.GetComponent<AreaScript>();
-                collision.GetComponent<AreaScript>().lineOn = true;
+            
                 myState.manager = 1;
-                Instantiate(collision.GetComponent<AreaScript>().line, this.transform.position, Quaternion.identity);
+                if (myState.lineOn == false)
+                {
+                    Instantiate(collision.GetComponent<AreaScript>().line, this.transform.position, Quaternion.identity);
+                    myState.lineOn = true;
+                } 
             }
            
         }
