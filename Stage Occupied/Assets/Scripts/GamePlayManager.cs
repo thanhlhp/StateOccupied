@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GamePlayManager : MonoBehaviour
 {
@@ -28,17 +29,22 @@ public class GamePlayManager : MonoBehaviour
         if (myStates == 0)
         {
             Debug.Log("thua");
+            isPlaying = false;
+            SceneManager.LoadScene("GamePlayScene");
         }
     }
     public void OnBtnPlay()
     {
-        Ui.enabled = false;
+        Ui.GetComponent<UiManager>().menu.gameObject.SetActive(false);
         StartCoroutine(Play());
     }
     IEnumerator Play()
     {
+        Ui.GetComponent<UiManager>().goBanner.SetActive(true);
         cameraZoom.GetComponent<CameraZoom>().zoomActive = true;
         yield return new WaitForSeconds(1f);
+        Ui.GetComponent<UiManager>().goBanner.SetActive(false);
         isPlaying = true;
+
     }
 }

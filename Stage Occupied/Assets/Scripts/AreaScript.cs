@@ -84,16 +84,21 @@ public class AreaScript : MonoBehaviour
             if (this.gameObject.tag == "EnemyStage" && botTimer > 5)
             {
                 botTimer = 0;
+                float minDistance = 9999f;
                 foreach (GameObject state in LevelScript.instance.State)
                 {
                     if (state.GetComponent<AreaScript>().unit <= this.unit && state.GetComponent<AreaScript>().areaCl != this.areaCl)
                     {
-                        target = state;
-                        StartCoroutine(MakeUnit());
-                        break;
+                        float distance = Vector3.Distance(state.transform.position, this.transform.position);
+                        if(minDistance>distance)
+                        {
+                            minDistance = distance;
+                            target = state;
+                        } 
                     }
-
                 }
+                StartCoroutine(MakeUnit());
+       
             }
 
             if (TouchScript.instance.manager == 1 && this.manager == 1)
